@@ -118,7 +118,15 @@ const app = {
         this.dartValue = 25;
         this.doScoring();
     },
-  
+    
+    onTrip() {
+        if (!this.targetValuePressed) {
+            return;
+        }
+        this.dartValue = T;
+        this.doScoring();
+    },
+ /* 
     onSingle() {
         if (!this.gameStart) {
             return;
@@ -143,7 +151,7 @@ const app = {
         this.targetValuePressed = true;
     },
     
-    
+    */
     doScoring() {                   // Example: 40 + 60 = 100; Take the remainder and then reset to max value and point other players. 
         this.players[this.currentPlayer][this.dartValue] = (this.players[this.currentPlayer][this.dartValue] + (this.targetValue * this.dartValue));
         let remainder = ((this.players[this.currentPlayer][this.dartValue]) - (this.dartValue * 3)); // Remainder of points to give to other players 
@@ -368,21 +376,21 @@ const app = {
 
     },
 
-    pickNumberOfPlayers() {
-
-        if (!this.gameStart) {
-       
-            if (this.numberOfPlayers >= 4) {
-                this.numberOfPlayers = 1;
-            } else {
-                this.numberOfPlayers++
-            }
-            
-            $('.player-select-num').text(this.numberOfPlayers);
-            console.log(this.numberOfPlayers)
-        }
-
-    },
+  //   pickNumberOfPlayers() {
+// 
+//         if (!this.gameStart) {
+//        
+//             if (this.numberOfPlayers >= 4) {
+//                 this.numberOfPlayers = 1;
+//             } else {
+//                 this.numberOfPlayers++
+//             }
+//             
+//             $('.player-select-num').text(this.numberOfPlayers);
+//             console.log(this.numberOfPlayers)
+//         }
+// 
+//     },
 
     onUndoModal() {
         if (!this.undoModalOpen) {
