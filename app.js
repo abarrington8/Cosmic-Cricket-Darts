@@ -1,10 +1,10 @@
 const app = {
     dartValue: null,
     targetValue: null,
-    numberOfPlayers: 1,
+    numberOfPlayers: 2,
     currentPlayer: 0,
     throwsRemaining: 3,
-    targetValuePressed: false,
+    //targetValuePressed: false,
     gameStart: false,
     gameOver: false,
     undoModalOpen: false,
@@ -17,7 +17,10 @@ const app = {
       16: 0,
       15: 0,
       25: 0,
-      score: 0
+      T: 0,
+      D: 0,
+      BED: 0,
+      points: 0
       
     },
       {
@@ -28,173 +31,68 @@ const app = {
       16: 0,
       15: 0,
       25: 0,
-      score: 0
-    },
-    {
-      20: 0,
-      19: 0,
-      18: 0,
-      17: 0,
-      16: 0,
-      15: 0,
-      25: 0,
-      score: 0
-    },
-    {
-      20: 0,
-      19: 0,
-      18: 0,
-      17: 0,
-      16: 0,
-      15: 0,
-      25: 0,
-      score: 0
+      T: 0,
+      D: 0,
+      BED: 0,
+      points: 0
     }],
     
     previousScores: [], // For "undo" button
     previousDartThrown: [],
     
-    onTwenty() {
-
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = 20;
-        this.doScoring();
-      // counter goes up, once it hits 3, reset to zero and switch player 
-
-
-
-      if (this.targetValuePress) {} //what if someone hits a score before hitting a target value? 
-      
-    },
-    onNineteen() {
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = 19;
-        this.doScoring();
-        
-    },
-    onEighteen() {
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = 18;
-        this.doScoring();
-    },
-
-    onSeventeen() {
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = 17;
-        this.doScoring();
-    },
-
-    onSixteen() {
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = 16;
-        this.doScoring();
-    },
-
-    onFifteen() {
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = 15;
-        this.doScoring();
-    },
-
-    onBull() {
-
-        if (this.targetValue === 3 || !this.targetValuePressed) {  // Prevents "triple" bullseye which isn't possible in game
-            this.targetValuePressed = false;
-            return;
-        }
-
-        this.dartValue = 25;
-        this.doScoring();
+    score(num, mult) {
+    	scoreDartThrown = num;
+    	scoreDartMult = 1;
+    	if (num == 0) { //T, D, or BED
+    		
+    		scoreDartThrown = mult;
+    		
+    	} else if (mult == "S") {
+    		this.dartValue = num;
+    	} else if (mult == "D") {
+    		this.dartValue = num * 2;
+    		scoreDartMult = 2;
+    	} else if (mult == "T") {
+    		this.dartValue = num * 3;
+    		scoreDartMult = 3;
+    	}
+    	console.log(this.dartValue);
+    	//this.players[this.currentPlayer][scoreDartThrown] = (this.players[this.currentPlayer][scoreDartThrown] + 1);
+    	this.doScoring(scoreDartThrown, scoreDartMult);
     },
     
-    onTrip() {
-        if (!this.targetValuePressed) {
-            return;
-        }
-        this.dartValue = T;
-        this.doScoring();
-    },
- /* 
-    onSingle() {
-        if (!this.gameStart) {
-            return;
-        }
-        this.targetValue = 1;
-        this.targetValuePressed = true;
-    },
-  
-    onDouble() {
-        if (!this.gameStart) {
-            return;
-        }
-        this.targetValue = 2;
-        this.targetValuePressed = true;
-    },
-  
-    onTriple() {
-        if (!this.gameStart) {
-            return;
-        }
-        this.targetValue = 3;
-        this.targetValuePressed = true;
-    },
-    
-    */
-    doScoring() {                   // Example: 40 + 60 = 100; Take the remainder and then reset to max value and point other players. 
-        this.players[this.currentPlayer][this.dartValue] = (this.players[this.currentPlayer][this.dartValue] + (this.targetValue * this.dartValue));
-        let remainder = ((this.players[this.currentPlayer][this.dartValue]) - (this.dartValue * 3)); // Remainder of points to give to other players 
-        
-        
-        this.updateDartboardView(this.dartValue, this.currentPlayer, this.players[this.currentPlayer][this.dartValue]);
-
-        console.log(`Remainder: ${remainder}`)
-
-        if (remainder > 0) {
-            this.players[this.currentPlayer][this.dartValue] = (this.dartValue * 3); // Reset the current player's dart value to maximum
-            
-
-            // Point other players 
-      
-            for (let i = 0; i < this.numberOfPlayers; i++) { 
+    doScoring(thrown, mult) {                   // Example: 40 + 60 = 100; Take the remainder and then reset to max value and point other players. 
+ 		possiblePoints = Math.max(0,thrown * (mult - (3 - this.players[this.currentPlayer][thrown])));
+        points = 0;
+        for (let i = 0; i < this.numberOfPlayers; i++) { 
                 if (i === this.currentPlayer) {
-                } else if (this.players[i][this.dartValue] < (this.dartValue * 3)) { // if the opponents aren't closed, point them with remainder 
-                    
-                    this.players[i]['score'] = ((this.players[i]['score']) + (remainder));
-                    
-                    $("#player-" + (i + 1)).text(this.players[i]['score']) // Update Score View 
-                    this.updateScoreView();
-
+                } else if (this.players[i][thrown] < 3) { // if the opponents aren't closed, point them with remainder 
+                    points = possiblePoints;
+                    this.players[this.currentPlayer]['points'] += points;
                 }
             } 
-        };  
-
-        var audio = new Audio('./sounds/knob.ogg');
-        audio.play();
+        
+        this.players[this.currentPlayer][thrown] = Math.min(3, mult + this.players[this.currentPlayer][thrown])
+        
+        $("#player-" + (this.currentPlayer + 1)).text(this.players[this.currentPlayer]['points']) // Update Score View 
+        this.updateScoreView();
+        
+        console.log(points)
+        
+        this.updateDartboardView(thrown, this.currentPlayer, this.players[this.currentPlayer][thrown]);
 
         this.checkWin();
 
         console.log(this.players)
 
-        this.previousDartThrown.push(this.dartValue);
+        this.previousDartThrown.push(thrown);
         this.onDartScore();
 
     },
 
     updateScoreView() {
         for (let i = 0; i < this.numberOfPlayers; i++) {        
-            $("#player-" + (i + 1)).text(this.players[i]['score']) // Update Score View 
+            $("#player-" + (i + 1)).text(this.players[i]['points']) // Update Score View 
         }
     }, 
 
@@ -211,26 +109,25 @@ const app = {
         if (playerNum === 0) {
             player = 1;
         } else if (playerNum === 1) {
-            player = 2;
-        } else if (playerNum === 2) {
-            player = 4;
-        } else {
             player = 5;
-        }
+        } // else if (playerNum === 2) {
+//             player = 4;
+//         } else {
+//             player = 5;
+//         }
 
-        if (playerDartScore  >= (dartValue * 3)) {
+        if (playerDartScore === 3) {
 
             $("#" + dartValue).find('td:nth-child' + '(' + player + ')').find('span').text('X');
             $("#" + dartValue).find('td:nth-child' + '(' + player + ')').find('span').addClass('number-circle number-circle-blue');
 
-            
     
-        } else if (playerDartScore  === (dartValue * 2)) {
+        } else if (playerDartScore  === 2) {
     
             $("#" + dartValue).find('td:nth-child' + '(' + player + ')').find('span').text('X');
             $("#" + dartValue).find('td:nth-child' + '(' + player + ')').find('span').removeClass('number-circle number-circle-blue');
     
-        } else if (playerDartScore  === dartValue) {
+        } else if (playerDartScore  === 1) {
     
             $("#" + dartValue).find('td:nth-child' + '(' + player + ')').find('span').text('/');
             $("#" + dartValue).find('td:nth-child' + '(' + player + ')').find('span').removeClass('number-circle number-circle-blue');
@@ -253,7 +150,7 @@ const app = {
         if (this.throwsRemaining < 1) {
             this.nextPlayer();
         }
-        this.targetValuePressed = false;
+        //this.targetValuePressed = false;
 
         // After a miss or dart throw, we must take a snapshot of the current game standings for use with the 'undo' feature
         // Since objects are assigned by reference, let's use JSON to skirt this issue. 
@@ -268,11 +165,7 @@ const app = {
     },
     
     nextPlayer() {
-
-        var audio = new Audio('./sounds/next-turn.ogg');
-        audio.play();
-
-
+    
         if (this.currentPlayer === (this.numberOfPlayers - 1)) {
             this.currentPlayer = 0;
         } else {
@@ -301,12 +194,12 @@ const app = {
         if (this.currentPlayer === 0) {
             player = 1;
         } else if (this.currentPlayer === 1) {
-            player = 2;
-        } else if (this.currentPlayer === 2) {
-            player = 4;
-        } else {
             player = 5;
-        }
+        } // else if (this.currentPlayer === 2) {
+//             player = 4;
+//         } else {
+//             player = 5;
+//         }
         
          $("table").find('th:nth-child(' + player + ')').addClass('player-active-header');
          $("table").find('td:nth-child(' + player + ')').addClass('player-active-board');
@@ -323,9 +216,6 @@ const app = {
         if (!this.gameStart) {
             return;
         }
-        var audio = new Audio('./sounds/miss.ogg');
-        audio.play();
-        
         this.previousDartThrown.push('miss');
         this.onDartScore();
 
@@ -353,7 +243,7 @@ const app = {
         for (var i = 0; i < this.numberOfPlayers; i++) {
             if (i === this.currentPlayer) {
             } else {
-                arrayOfScores.push(this.players[i]['score']);
+                arrayOfScores.push(this.players[i]['points']);
             }
         }
 
@@ -490,119 +380,163 @@ const app = {
         
     },
 
-    keyBoardEvents(e) {
-        switch(e.keyCode) {
-            case 98: 
-                console.log('2 key pressed') // twenty
-                this.onTwenty();
-                break;
-            case 105: 
-                console.log('9 key pressed') // nineteen
-                this.onNineteen();
-                break;
-            case 104: 
-                console.log('8 key pressed') // eighteen 
-                this.onEighteen();
-                break;
-            case 103: 
-                console.log('7 key pressed') // seventeen
-                this.onSeventeen();
-                break;
-            case 102: 
-                console.log('6 key pressed') // sixteen
-                this.onSixteen();
-                break;
-            case 101: 
-                console.log('5 key pressed') // fifteen
-                this.onFifteen(); 
-                break;
-            case 66:
-                console.log('B key pressed') // bullseye
-                this.onBull();
-                break;
-            case 84:
-                console.log('T key pressed'); // triple
-                this.onTriple();
-                break;
-            case 68:
-                console.log('D key pressed'); // double 
-                this.onDouble();
-                break;
-            case 83:
-                console.log('S key pressed'); // single
-                this.onSingle(); 
-                break;
-            case 80:
-                console.log('P key pressed') // # of players select
-                this.pickNumberOfPlayers();
-                break;
-            case 77:
-                console.log('M key pressed') // miss
-                this.onDartMiss();
-                break;
-            case 85: 
-                console.log('U key pressed') // undo
-                this.onUndoModal();
-                break;
-            case 89:
-                console.log('Y key pressed') // start 
-                this.playGame();
-                break;
-        }
-    },
+   //  keyBoardEvents(e) {
+//         switch(e.keyCode) {
+//             case 98: 
+//                 console.log('2 key pressed') // twenty
+//                 this.onTwenty();
+//                 break;
+//             case 105: 
+//                 console.log('9 key pressed') // nineteen
+//                 this.onNineteen();
+//                 break;
+//             case 104: 
+//                 console.log('8 key pressed') // eighteen 
+//                 this.onEighteen();
+//                 break;
+//             case 103: 
+//                 console.log('7 key pressed') // seventeen
+//                 this.onSeventeen();
+//                 break;
+//             case 102: 
+//                 console.log('6 key pressed') // sixteen
+//                 this.onSixteen();
+//                 break;
+//             case 101: 
+//                 console.log('5 key pressed') // fifteen
+//                 this.onFifteen(); 
+//                 break;
+//             case 66:
+//                 console.log('B key pressed') // bullseye
+//                 this.onBull();
+//                 break;
+//             case 84:
+//                 console.log('T key pressed'); // triple
+//                 this.onTriple();
+//                 break;
+//             case 68:
+//                 console.log('D key pressed'); // double 
+//                 this.onDouble();
+//                 break;
+//             case 83:
+//                 console.log('S key pressed'); // single
+//                 this.onSingle(); 
+//                 break;
+//             case 80:
+//                 console.log('P key pressed') // # of players select
+//                 this.pickNumberOfPlayers();
+//                 break;
+//             case 77:
+//                 console.log('M key pressed') // miss
+//                 this.onDartMiss();
+//                 break;
+//             case 85: 
+//                 console.log('U key pressed') // undo
+//                 this.onUndoModal();
+//                 break;
+//             case 89:
+//                 console.log('Y key pressed') // start 
+//                 this.playGame();
+//                 break;
+//         }
+//    },
   
     cacheDOM() {
-        this.twenty = document.getElementById("twenty");
-        this.nineteen = document.getElementById("nineteen");
-        this.eighteen = document.getElementById("eighteen");
-        this.seventeen = document.getElementById("seventeen");
-        this.sixteen = document.getElementById("sixteen");
-        this.fifteen = document.getElementById("fifteen");
-        this.bull = document.getElementById("bull-button");
-
-        this.single = document.getElementById("single");
-        this.double = document.getElementById("double");
-        this.triple = document.getElementById("triple");
-
-        this.miss = document.getElementById("miss");
-        this.playerSelection = document.getElementById("playerSelection");
-        this.onPlayGame = document.getElementById("play-game-button");
-        this.undo = document.getElementById("undo-button");
+        // this.twenty = document.getElementById("twenty");
+//         this.nineteen = document.getElementById("nineteen");
+//         this.eighteen = document.getElementById("eighteen");
+//         this.seventeen = document.getElementById("seventeen");
+//         this.sixteen = document.getElementById("sixteen");
+//         this.fifteen = document.getElementById("fifteen");
+//         this.bull = document.getElementById("bull-button");
+// 
+//         this.single = document.getElementById("single");
+//         this.double = document.getElementById("double");
+//         this.triple = document.getElementById("triple");
+// 
+//         this.miss = document.getElementById("miss");
+//         this.playerSelection = document.getElementById("playerSelection");
+//         this.onPlayGame = document.getElementById("play-game-button");
+//         this.undo = document.getElementById("undo-button");
 
     },
   
-    bindEvents() {
-
-        document.body.onkeyup = this.keyBoardEvents.bind(this); // Need to bind to the app object otherwise 'this' will point to the DOM
-
-
-        /* 
-        The following were uesd for onscreen controls while deving without the physical buttons
-        Keeping them here for debugging purposes 
-
-        this.twenty.onclick = this.onTwenty.bind(this);     
-        this.nineteen.onclick = this.onNineteen.bind(this);
-        this.eighteen.onclick = this.onEighteen.bind(this);
-        this.seventeen.onclick = this.onSeventeen.bind(this);
-        this.sixteen.onclick = this.onSixteen.bind(this);
-        this.fifteen.onclick = this.onFifteen.bind(this);
-        this.bull.onclick = this.onBull.bind(this);
-
-        this.single.onclick = this.onSingle.bind(this);
-        this.double.onclick = this.onDouble.bind(this);
-        this.triple.onclick = this.onTriple.bind(this);
-
-        this.miss.onclick = this.onDartMiss.bind(this);
-        this.playerSelection.onclick = this.pickNumberOfPlayers.bind(this);
-        this.onPlayGame.onclick = this.playGame.bind(this);
-        this.undo.onclick = this.onUndoModal.bind(this);
-        */
-
-    },
+   //  bindEvents() {
+// 
+//         document.body.onkeyup = this.keyBoardEvents.bind(this); // Need to bind to the app object otherwise 'this' will point to the DOM
+// 
+// 
+//         /* 
+//         The following were uesd for onscreen controls while deving without the physical buttons
+//         Keeping them here for debugging purposes 
+// 
+//         this.twenty.onclick = this.onTwenty.bind(this);     
+//         this.nineteen.onclick = this.onNineteen.bind(this);
+//         this.eighteen.onclick = this.onEighteen.bind(this);
+//         this.seventeen.onclick = this.onSeventeen.bind(this);
+//         this.sixteen.onclick = this.onSixteen.bind(this);
+//         this.fifteen.onclick = this.onFifteen.bind(this);
+//         this.bull.onclick = this.onBull.bind(this);
+// 
+//         this.single.onclick = this.onSingle.bind(this);
+//         this.double.onclick = this.onDouble.bind(this);
+//         this.triple.onclick = this.onTriple.bind(this);
+// 
+//         this.miss.onclick = this.onDartMiss.bind(this);
+//         this.playerSelection.onclick = this.pickNumberOfPlayers.bind(this);
+//         this.onPlayGame.onclick = this.playGame.bind(this);
+//         this.undo.onclick = this.onUndoModal.bind(this);
+//         */
+// 
+//     },
+  
+  	addListeners() {
+  		document.getElementById("single20").addEventListener("click", function() {app.score(20,"S");}, false);
+  		document.getElementById("double20").addEventListener("click", function() {app.score(20,"D");}, false);
+  		document.getElementById("triple20").addEventListener("click", function() {app.score(20,"T");}, false);
+  		
+  		document.getElementById("single19").addEventListener("click", function() {app.score(19,"S");}, false);
+  		document.getElementById("double19").addEventListener("click", function() {app.score(19,"D");}, false);
+  		document.getElementById("triple19").addEventListener("click", function() {app.score(19,"T");}, false);
+  		
+  		document.getElementById("single18").addEventListener("click", function() {app.score(18,"S");}, false);
+  		document.getElementById("double18").addEventListener("click", function() {app.score(18,"D");}, false);
+  		document.getElementById("triple18").addEventListener("click", function() {app.score(18,"T");}, false);
+  		
+  		document.getElementById("single17").addEventListener("click", function() {app.score(17,"S");}, false);
+  		document.getElementById("double17").addEventListener("click", function() {app.score(17,"D");}, false);
+  		document.getElementById("triple17").addEventListener("click", function() {app.score(17,"T");}, false);
+  		
+  		document.getElementById("single16").addEventListener("click", function() {app.score(16,"S");}, false);
+  		document.getElementById("double16").addEventListener("click", function() {app.score(16,"D");}, false);
+  		document.getElementById("triple16").addEventListener("click", function() {app.score(16,"T");}, false);
+  		
+  		document.getElementById("single15").addEventListener("click", function() {app.score(15,"S");}, false);
+  		document.getElementById("double15").addEventListener("click", function() {app.score(15,"D");}, false);
+  		document.getElementById("triple15").addEventListener("click", function() {app.score(15,"T");}, false);
+  		
+  		document.getElementById("singleB").addEventListener("click", function() {app.score(25,"S");}, false);
+  		document.getElementById("doubleB").addEventListener("click", function() {app.score(25,"D");}, false);
+  		
+  		document.getElementById("T").addEventListener("click", function() {app.score(0,"T");}, false);
+  		
+  		document.getElementById("D").addEventListener("click", function() {app.score(0,"D");}, false);
+  		
+  		document.getElementById("BED").addEventListener("click", function() {app.score(0,"BED");}, false);
+  		
+  		document.getElementById("MISS").addEventListener("click", function() {app.onDartMiss();}, false);
+  		
+  		document.getElementById("UNDO").addEventListener("click", function() {app.onUndoModal();}, false);
+  		
+  		document.getElementById("UndoConf").addEventListener("click", function() {app.onUndoModal();}, false);
+  		
+  		document.getElementById("UndoCanc").addEventListener("click", function() {app.playGame();}, false);
+  	},
   
     init() {
       this.cacheDOM();
-      this.bindEvents();
+      //this.bindEvents();
+      this.addListeners();
       this.setupInitialViewCSS();
     }
   

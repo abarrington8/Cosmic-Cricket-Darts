@@ -10,14 +10,14 @@
 
         <!-- Player Select Modal 
         <div class="player-select">
-            <img src="images/logo.svg" style="width: 400px; padding-top: 50px;" class="center-block text-align">
+            <img src="images/logo.png" style="width: 400px; padding-top: 50px;" class="center-block text-align">
             <h2>Select Number of Players</h2>
             <h1 class="player-select-num">1</h1>
         </div>-->
 
         <!-- Win Modal -->
         <div class="win-message hidden">
-                <img src="images/logo.svg" style="width: 400px; padding-top: 50px;" class="center-block text-align">
+                <img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align">
                 <p id="winner">Game Over</p>
                 <h2>Press Play for a new game</h2>
         </div>
@@ -25,10 +25,10 @@
 
         <!-- Undo Modal -->
         <div class="undo-modal hidden">
-            <img src="images/logo.svg" style="width: 400px; padding-top: 50px;" class="center-block text-align">
+            <!--<img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align"> -->
             <div class="undo-content">
-                <h2>Press <span class="bright-color">Undo</span> to reset last turn</h2>
-                <h2>Press <span class="bright-color">Play</span> to cancel and resume</h2>
+                <h2>Press <span class="bright-color" id="UndoConf">Undo</span> to reset last turn</h2>
+                <h2>Press <span class="bright-color" id="UndoCanc">Play</span> to cancel and resume</h2>
             </div>
         </div>
 
@@ -41,7 +41,7 @@
                     <p id="player-1" class="score">0</p>
                 </div>
                 <div class="col-xs-6 text-center">
-                    <object data="images/logo.svg" type="image/svg+xml" class="logo" id="main-logo"></object>
+                <img src="images/logo.png" style="width: 450px; padding-top: 0px; object-fit:cover;" class="center-block text-align">
                 </div>
                 <div class="col-xs-3 player-box" id="player-box-2">
                         <h1>Player 2</h1>
@@ -74,73 +74,79 @@
                         </tr>
                         <tr id="20">
                             <td><span></span></td>
-                            <td><span>D20</span></td> 
-                            <td>20</td>
-                            <td><span>T20</span></td>
+                            <td><span id="double20" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" style="font-size: 65%">D20</span></td> 
+                            <td><span id="single20" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'">20</span></td>
+                            <td><span id="triple20" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" style="font-size: 65%">T20</span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="19">
                             <td><span></span></td>
-                            <td><span>D19</span></td> 
-                            <td>19</td>
-                            <td><span>T19</span></td>
+                            <td><span id="double19" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">D19</span></td> 
+                            <td><span id="single19" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >19</span></td>
+                            <td><span id="triple19" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">T19</span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="18">
                             <td><span></span></td>
-                            <td><span>D18</span></td> 
-                            <td>18</td>
-                            <td><span>T18</span></td>
+                            <td><span id="double18" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">D18</span></td> 
+                            <td><span id="single18" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >18</span></td>
+                            <td><span id="triple18" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">T18</span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="17">
                             <td><span></span></td>
-                            <td><span>D17</span></td> 
-                            <td>17</td>
-                            <td><span>T17</span></td>
+                            <td><span id="double17" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">D17</span></td> 
+                            <td><span id="single17" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >17</span></td>
+                            <td><span id="triple17" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">T17</span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="16">
                             <td><span></span></td>
-                            <td><span>D16</span></td> 
-                            <td>16</td>
-                            <td><span>T16</span></td>
+                            <td><span id="double16" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">D16</span></td> 
+                            <td><span id="single16" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >16</span></td>
+                            <td><span id="triple16" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">T16</span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="15">
                             <td><span></span></td>
-                            <td><span>D15</span></td> 
-                            <td>15</td>
-                            <td><span>T15</span></td>
+                            <td><span id="double15" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">D15</span></td> 
+                            <td><span id="single15" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >15</span></td>
+                            <td><span id="triple15" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">T15</span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="25">
                             <td><span></span></td>
-                            <td><span>DB</span></td> 
-                            <td>BULL</td>
+                            <td><span id="doubleB" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"  style="font-size: 65%">DB</span></td> 
+                            <td><span id="singleB" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >B</span></td>
                             <td><span></span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="T">
                             <td><span></span></td>
                             <td><span></span></td> 
-                            <td>T</td>
+                            <td><span id="T" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >T</span></td>
                             <td><span></span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="D">
                             <td><span></span></td>
                             <td><span></span></td> 
-                            <td>D</td>
+                            <td><span id="D" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >D</span></td>
                             <td><span></span></td>
                             <td><span></span></td>
                         </tr>
                         <tr id="3">
                             <td><span></span></td>
                             <td><span></span></td> 
-                            <td>3B</td>
+                            <td><span id="BED" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >3B</span></td>
                             <td><span></span></td>
                             <td><span></span></td>
+                        </tr>
+                        <tr id="M">
+                        	<td><span></span></td>
+                        	<td colspan=2 style="border-top: 4px solid #FB9B37;"><span id="MISS" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >MISS</span></td>
+                        	<td style="border-top: 4px solid #FB9B37;"><span id="UNDO" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >←</span></td>
+                        	<td><span></span></td>
                         </tr>
                     </table>
                     <!-- <table class="previous-throw-info">
