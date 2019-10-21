@@ -213,9 +213,9 @@ const app = {
     },
 
     onDartMiss() {
-        if (!this.gameStart) {
-            return;
-        }
+        // if (!this.gameStart) {
+//             return;
+//         }
         this.previousDartThrown.push('miss');
         this.onDartScore();
 
