@@ -8,6 +8,7 @@ const app = {
     gameStart: false,
     gameOver: false,
     undoModalOpen: false,
+    scoreFBModelOpen: false,
     players: [  
     {
       20: 0,
@@ -44,7 +45,8 @@ const app = {
     	scoreDartThrown = num;
     	scoreDartMult = 1;
     	if (num == 0) { //T, D, or BED
-    		
+    		if (this.throwsRemaining < 3 && mult == "BED") return;
+    		else if (mult == "BED") this.throwsRemaining = 1;
     		scoreDartThrown = mult;
     		
     	} else if (mult == "S") {
@@ -62,16 +64,42 @@ const app = {
     },
     
     doScoring(thrown, mult) {                   // Example: 40 + 60 = 100; Take the remainder and then reset to max value and point other players. 
- 		possiblePoints = Math.max(0,thrown * (mult - (3 - this.players[this.currentPlayer][thrown])));
-        points = 0;
-        for (let i = 0; i < this.numberOfPlayers; i++) { 
-                if (i === this.currentPlayer) {
-                } else if (this.players[i][thrown] < 3) { // if the opponents aren't closed, point them with remainder 
-                    points = possiblePoints;
-                    this.players[this.currentPlayer]['points'] += points;
-                }
-            } 
-        
+ 		points = 0;
+ 		possiblePoints = 0;
+ 		if (['T', 'D', 'BED'].indexOf(thrown) >= 0) {
+ 			console.log("FB score hit");
+ 			if (this.players[this.currentPlayer][thrown] == 3) { //activate modal to ask what number what hit for points
+    			console.log("full board scoring");
+    			if (thrown == "T") {
+    				document.getElementById("FBtitle").innerHTML = "triple";
+    				document.getElementById("FBtype").value = "T";
+    			} else if (thrown == "D") {
+    				document.getElementById("FBtitle").innerHTML = "double";
+    				document.getElementById("FBtype").value = "D";
+    			} else if (thrown == "BED") {
+    				document.getElementById("FBtitle").innerHTML = "3 bed";
+    				document.getElementById("FBtype").value = "BED";
+    			}
+    			app.onScoreFBModal(thrown);
+    			return;
+    			// .then(success => {
+//     				if (thrown == 'D') possiblePoints = num * 3;
+//     				else possiblePoints = num * 2;
+//     				console.log(possiblePoints);
+    			//});
+    		}
+ 		} else {
+ 			possiblePoints = Math.max(0,thrown * (mult - (3 - this.players[this.currentPlayer][thrown])));
+		}
+		
+		for (let i = 0; i < this.numberOfPlayers; i++) { 
+			if (i === this.currentPlayer) {
+				
+			} else if (this.players[i][thrown] < 3) { // if the opponents aren't closed, point them with remainder 
+				points = possiblePoints;
+			}
+		} 
+        this.players[this.currentPlayer]['points'] += points;
         this.players[this.currentPlayer][thrown] = Math.min(3, mult + this.players[this.currentPlayer][thrown])
         
         $("#player-" + (this.currentPlayer + 1)).text(this.players[this.currentPlayer]['points']) // Update Score View 
@@ -181,9 +209,9 @@ const app = {
         
         for (let i = 1; i < 6; i++) {
             $('#player-box-' + i).removeClass('player-active'); // good
-            $("table").find('th:nth-child(' + i + ')').removeClass('player-active-header');
-            $("table").find('td:nth-child(' + i + ')').removeClass('player-active-board');
-            $("table").find('tr:last-child td:nth-child(' + i + ')').removeClass('border-bottom');
+            $(".container table").find('th:nth-child(' + i + ')').removeClass('player-active-header');
+            $(".container table").find('td:nth-child(' + i + ')').removeClass('player-active-board');
+            $(".container table").find('tr:last-child td:nth-child(' + i + ')').removeClass('border-bottom');
 
         } 
 
@@ -201,14 +229,14 @@ const app = {
 //             player = 5;
 //         }
         
-         $("table").find('th:nth-child(' + player + ')').addClass('player-active-header');
-         $("table").find('td:nth-child(' + player + ')').addClass('player-active-board');
-         $("table").find('tr:last-child td:nth-child(' + player + ')').addClass('border-bottom');
+         $(".container table").find('th:nth-child(' + player + ')').addClass('player-active-header');
+         $(".container table").find('td:nth-child(' + player + ')').addClass('player-active-board');
+         $(".container table").find('tr:last-child td:nth-child(' + player + ')').addClass('border-bottom');
 
-      $("table").find('.number-circle').removeClass('number-circle-blue');
+      $(".container table").find('.number-circle').removeClass('number-circle-blue');
 
       // current player
-      $("table").find('td:nth-child' + '(' + player + ')').find('.number-circle').addClass('number-circle-blue');
+      $(".container table").find('td:nth-child' + '(' + player + ')').find('.number-circle').addClass('number-circle-blue');
 
     },
 
@@ -224,46 +252,24 @@ const app = {
 
 
     checkWin() {
-
-        let total = Object.values(this.players[this.currentPlayer]).reduce((a, b) => a + b); 
-
-        total = total - this.players[this.currentPlayer]['score']; // need to omit 'score' property from total
-
-
-        // If only 1 player 
-        if (this.numberOfPlayers === 1 && total >= 390) {
-            console.log(`${this.currentPlayer} Wins!`);
-            $('.win-message').removeClass('hidden');
-            this.gameOver = true;
-            return;
-         }
-
-        let arrayOfScores = [];
-
-        for (var i = 0; i < this.numberOfPlayers; i++) {
-            if (i === this.currentPlayer) {
-            } else {
-                arrayOfScores.push(this.players[i]['points']);
-            }
-        }
-
-
-        const allDartsClosed = ()  => {   
-
-         let lowestScore = Math.min(...arrayOfScores);
-         console.log(lowestScore)
-
-         if (total >= 390 && this.players[this.currentPlayer]['score'] < lowestScore) {
-            console.log(`${this.currentPlayer} Wins!`);
-            $("#winner").text(`Player ${this.currentPlayer + 1} Wins!`);
-            $(".win-message").removeClass('hidden')
-            this.gameOver = true;
-
-         }
-        }
-
-        allDartsClosed();
-
+		if (this.players[this.currentPlayer][20] == 3 &&
+			this.players[this.currentPlayer][19] == 3 &&
+			this.players[this.currentPlayer][18] == 3 &&
+			this.players[this.currentPlayer][17] == 3 &&
+			this.players[this.currentPlayer][16] == 3 &&
+			this.players[this.currentPlayer][15] == 3 &&
+			this.players[this.currentPlayer][25] == 3 &&
+			this.players[this.currentPlayer]['T'] == 3 &&
+			this.players[this.currentPlayer]['D'] == 3 &&
+			this.players[this.currentPlayer]['BED'] == 3 &&
+			this.players[this.currentPlayer]['points'] >= this.players[Math.abs(this.currentPlayer-1)]['points']) {
+				//win
+				console.log(`${this.currentPlayer} Wins!`);
+           		$("#winner").text(`Player ${this.currentPlayer + 1} Wins!`);
+           		$('.win-message').removeClass('hidden');
+            	this.gameOver = true;
+            	return;
+			}
     },
 
   //   pickNumberOfPlayers() {
@@ -281,6 +287,46 @@ const app = {
 //         }
 // 
 //     },
+	onScoreFBModal(num = 0) {
+		if (!this.scoreFBModalOpen) {
+            $(".scoreFB-modal").removeClass('hidden'); // if not open, open it 
+            this.scoreFBModalOpen = true;
+            console.log("onScoreFBModal opening");
+        }
+        
+        else {
+            $(".scoreFB-modal").addClass('hidden'); // close after confirming 
+            this.scoreFBModalOpen = false;
+            console.log("onScoreFBModal closing");
+            thrown = document.getElementById("FBtype").value;
+            if (thrown == 'D') possiblePoints = num * 2;
+     		else possiblePoints = num * 3;
+     		console.log(possiblePoints);
+     		for (let i = 0; i < this.numberOfPlayers; i++) { 
+				if (i === this.currentPlayer) {
+				
+				} else if (this.players[i][thrown] < 3) { // if the opponents aren't closed, point them with remainder 
+					points = possiblePoints;
+				}
+			} 
+			this.players[this.currentPlayer]['points'] += points;
+// 			this.players[this.currentPlayer][thrown] = Math.min(3, mult + this.players[this.currentPlayer][thrown])
+		
+			$("#player-" + (this.currentPlayer + 1)).text(this.players[this.currentPlayer]['points']) // Update Score View 
+			this.updateScoreView();
+		
+			console.log(points)
+		
+			this.updateDartboardView(thrown, this.currentPlayer, this.players[this.currentPlayer][thrown]);
+
+			this.checkWin();
+
+			console.log(this.players)
+
+			this.previousDartThrown.push(thrown);
+			this.onDartScore();
+        }
+	},
 
     onUndoModal() {
         if (!this.undoModalOpen) {
@@ -351,11 +397,11 @@ const app = {
             this.gameStart = true;
             this.previousScores.push(JSON.stringify(this.players)); // Start keeping track of previous scores for 'undo' feature
 
-            $('#main-logo').addClass("flicker");
-            setTimeout(() => {
-                var audio = new Audio('./sounds/sizzle.wav');
-                audio.play(); 
-            }, 250)
+//             $('#main-logo').addClass("flicker");
+//             setTimeout(() => {
+//                 var audio = new Audio('./sounds/sizzle.wav');
+//                 audio.play(); 
+//             }, 250)
             console.log('game started')
             console.log(this.numberOfPlayers)
         }
@@ -368,15 +414,20 @@ const app = {
             $(".undo-modal").addClass('hidden'); // close after canceling 'undo'
             this.undoModalOpen = false;
         }
+        
+        if (this.gameStart && this.scoreFBModalOpen) {
+            $(".scoreFB-modal").addClass('hidden'); // close after canceling 'undo'
+            this.scpreFBModalOpen = false;
+        }
      
 
 
     },
 
     setupInitialViewCSS() {
-        $("table").find('th:nth-child(1)').addClass('player-active-header');
-        $("table").find('td:nth-child(1)').addClass('player-active-board');
-        $("table").find('tr:last-child td:nth-child(1)').addClass('border-bottom');
+        $(".container table").find('th:nth-child(1)').addClass('player-active-header');
+        $(".container table").find('td:nth-child(1)').addClass('player-active-board');
+        $(".container table").find('tr:last-child td:nth-child(1)').addClass('border-bottom');
         
     },
 
@@ -522,7 +573,7 @@ const app = {
   		
   		document.getElementById("D").addEventListener("click", function() {app.score(0,"D");}, false);
   		
-  		document.getElementById("BED").addEventListener("click", function() {app.score(0,"BED");}, false);
+  		document.getElementById("3BED").addEventListener("click", function() {app.score(0,"BED");}, false);
   		
   		document.getElementById("MISS").addEventListener("click", function() {app.onDartMiss();}, false);
   		
@@ -531,6 +582,30 @@ const app = {
   		document.getElementById("UndoConf").addEventListener("click", function() {app.onUndoModal();}, false);
   		
   		document.getElementById("UndoCanc").addEventListener("click", function() {app.playGame();}, false);
+  		
+  		document.getElementById("overPlay").addEventListener("click", function() {app.playGame();}, false);
+  		
+  		document.getElementById("FB20").addEventListener("click", function() {app.onScoreFBModal(20);}, false);
+		document.getElementById("FB19").addEventListener("click", function() {app.onScoreFBModal(19);}, false);
+		document.getElementById("FB18").addEventListener("click", function() {app.onScoreFBModal(18);}, false);
+		document.getElementById("FB17").addEventListener("click", function() {app.onScoreFBModal(17);}, false);
+		document.getElementById("FB16").addEventListener("click", function() {app.onScoreFBModal(16);}, false);
+		document.getElementById("FB15").addEventListener("click", function() {app.onScoreFBModal(15);}, false);
+		document.getElementById("FB14").addEventListener("click", function() {app.onScoreFBModal(14);}, false);
+		document.getElementById("FB13").addEventListener("click", function() {app.onScoreFBModal(13);}, false);
+		document.getElementById("FB12").addEventListener("click", function() {app.onScoreFBModal(12);}, false);
+		document.getElementById("FB11").addEventListener("click", function() {app.onScoreFBModal(11);}, false);
+		document.getElementById("FB10").addEventListener("click", function() {app.onScoreFBModal(10);}, false);
+		document.getElementById("FB9").addEventListener("click", function() {app.onScoreFBModal(9);}, false);
+		document.getElementById("FB8").addEventListener("click", function() {app.onScoreFBModal(8);}, false);
+		document.getElementById("FB7").addEventListener("click", function() {app.onScoreFBModal(7);}, false);
+		document.getElementById("FB6").addEventListener("click", function() {app.onScoreFBModal(6);}, false);
+		document.getElementById("FB5").addEventListener("click", function() {app.onScoreFBModal(5);}, false);
+		document.getElementById("FB4").addEventListener("click", function() {app.onScoreFBModal(4);}, false);
+		document.getElementById("FB3").addEventListener("click", function() {app.onScoreFBModal(3);}, false);
+		document.getElementById("FB2").addEventListener("click", function() {app.onScoreFBModal(2);}, false);
+		document.getElementById("FB1").addEventListener("click", function() {app.onScoreFBModal(1);}, false);
+		document.getElementById("FBB").addEventListener("click", function() {app.onScoreFBModal(25);}, false);
   	},
   
     init() {

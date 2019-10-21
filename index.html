@@ -19,7 +19,7 @@
         <div class="win-message hidden">
                 <img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align">
                 <p id="winner">Game Over</p>
-                <h2>Press Play for a new game</h2>
+                <h2>Press <span class="bright-color" id="overPlay">Play</span> for a new game</h2>
         </div>
 
 
@@ -27,8 +27,46 @@
         <div class="undo-modal hidden">
             <!--<img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align"> -->
             <div class="undo-content">
-                <h2>Press <span class="bright-color" id="UndoConf">Undo</span> to reset last turn</h2>
-                <h2>Press <span class="bright-color" id="UndoCanc">Play</span> to cancel and resume</h2>
+                <h3>Press <span class="bright-color" id="UndoConf">Undo</span> to reset last turn</h3>
+                <h3>Press <span class="bright-color" id="UndoCanc">Play</span> to cancel and resume</h3>
+            </div>
+        </div>
+        
+        <!-- Score Full Board Modal -->
+        <div class="scoreFB-modal hidden">
+            <!--<img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align"> -->
+            <div class="scoreFB-content">
+            	<h3>Which <span id="FBtitle">triple</span> did you hit?</h3>
+            	<input type="hidden" id="FBtype" value="T">
+                <table style="width: 100%">
+                	<tr>
+                		<td><span  id="FB20">20</span></td>
+                		<td><span  id="FB19">19</span></td>
+                		<td><span  id="FB18">18</span></td>
+                		<td><span  id="FB17">17</span></td>
+                		<td><span  id="FB16">16</span></td>
+                		<td><span  id="FB15">15</span></td>
+                		<td><span class="bright-color" id="FB14">14</span></td>
+                	</tr>
+                	<tr>
+                		<td><span class="bright-color" id="FB13">13</span></td>
+                		<td><span class="bright-color" id="FB12">12</span></td>
+                		<td><span class="bright-color" id="FB11">11</span></td>
+                		<td><span class="bright-color" id="FB10">10</span></td>
+                		<td><span class="bright-color" id="FB9">9</span></td>
+                		<td><span class="bright-color" id="FB8">8</span></td>
+                		<td><span class="bright-color" id="FB7">7</span></td>
+                	</tr>
+                	<tr>
+                		<td><span class="bright-color" id="FB6">6</span></td>
+                		<td><span class="bright-color" id="FB5">5</span></td>
+                		<td><span class="bright-color" id="FB4">4</span></td>
+                		<td><span class="bright-color" id="FB3">3</span></td>
+                		<td><span class="bright-color" id="FB2">2</span></td>
+                		<td><span class="bright-color" id="FB1">1</span></td>
+                		<td><span class="bright-color" id="FBB">B</span></td>
+                	</tr>
+                </table>
             </div>
         </div>
 
@@ -135,10 +173,10 @@
                             <td><span></span></td>
                             <td><span></span></td>
                         </tr>
-                        <tr id="3">
+                        <tr id="BED">
                             <td><span></span></td>
                             <td><span></span></td> 
-                            <td><span id="BED" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >3B</span></td>
+                            <td><span id="3BED" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >3B</span></td>
                             <td><span></span></td>
                             <td><span></span></td>
                         </tr>
