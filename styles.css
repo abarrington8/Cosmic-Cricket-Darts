@@ -164,7 +164,7 @@ th, tr {
   color: #3dfdfd;
 }
 
-.win-message, .undo-modal, .scoreFB-modal, .player-select {
+.win-message, .undo-modal, .scoreFB-modal, .modal-3B, .player-select {
   position: fixed;
   vertical-align: middle;
   left: 10%;
@@ -176,8 +176,8 @@ th, tr {
   background: rgba(0, 0, 0, 1);
 }
 
-.undo-content, .scoreFB-content {
-  margin-top: 20px;
+.undo-content, .scoreFB-content, .content-3B {
+  margin-top: 10px;
   vertical-align: middle;
 }
 

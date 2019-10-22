@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Darts.io</title>
+        <title>Full Board Cricket</title>
     </head>
     <body class="game-over">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -36,7 +36,7 @@
         <div class="scoreFB-modal hidden">
             <!--<img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align"> -->
             <div class="scoreFB-content">
-            	<h3>Which <span id="FBtitle">triple</span> did you hit?</h3>
+            	<h2>Which <span id="FBtitle">triple</span> did you hit?</h2>
             	<input type="hidden" id="FBtype" value="T">
                 <table style="width: 100%">
                 	<tr>
@@ -70,6 +70,25 @@
             </div>
         </div>
 
+        <!-- 3 Bed Modal -->
+        <div class="modal-3B hidden">
+            <!--<img src="images/logo.png" style="width: 400px; padding-top: 50px; object-fit:cover;" class="center-block text-align"> -->
+            <div class="content-3B">
+            	<h2>How many did you hit?</h2>
+            	<input type="hidden" id="thrown-3B" value="0">
+                <table style="width: 100%">
+                	<tr>
+                		<td><span id="3B-3">3</span></td>
+                		<td><span class="bright-color" id="3B-4">4</span></td>
+                		<td><span class="bright-color" id="3B-5">5</span></td>
+                		<td><span class="bright-color" id="3B-6">6</span></td>
+                		<td><span class="bright-color" id="3B-7">7</span></td>
+                		<td><span class="bright-color" id="3B-8">8</span></td>
+                		<td><span class="bright-color" id="3B-9">9</span></td>
+                	</tr>
+                </table>
+            </div>
+        </div>
 
         <!-- Dartboard -->
         <div class="container">
@@ -182,7 +201,7 @@
                         </tr>
                         <tr id="M">
                         	<td><span></span></td>
-                        	<td colspan=2 style="border-top: 4px solid #FB9B37;"><span id="MISS" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >MISS</span></td>
+                        	<td colspan=2 style="border-top: 4px solid #FB9B37;"><span id="ENTER" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >ENTER</span></td>
                         	<td style="border-top: 4px solid #FB9B37;"><span id="UNDO" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" >←</span></td>
                         	<td><span></span></td>
                         </tr>

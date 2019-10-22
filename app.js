@@ -8,7 +8,8 @@ const app = {
     gameStart: false,
     gameOver: false,
     undoModalOpen: false,
-    scoreFBModelOpen: false,
+    scoreFBModalOpen: false,
+    modalOpen3B: false,
     players: [  
     {
       20: 0,
@@ -72,9 +73,11 @@ const app = {
     			console.log("FB hit potential score");
     			if (this.players[Math.abs(this.currentPlayer - 1)][thrown] < 3) {
 					console.log("full board scoring");
+					$("#FBB").removeClass("closed");
 					if (thrown == "T") {
 						document.getElementById("FBtitle").innerHTML = "triple";
 						document.getElementById("FBtype").value = "T";
+						$("#FBB").addClass("closed");
 					} else if (thrown == "D") {
 						document.getElementById("FBtitle").innerHTML = "double";
 						document.getElementById("FBtype").value = "D";
@@ -259,6 +262,15 @@ const app = {
 
         $("#throws-left").text(this.throwsRemaining);
     },
+    
+    onTurnEnd() {
+    	console.log("throws remaining: " + this.throwsRemaining);
+    	tr_start = this.throwsRemaining;
+    	for (let i = 1; i <= tr_start; i++) {
+    		console.log("throws remaining: " + this.throwsRemaining);
+    		app.onDartMiss();
+    	}
+    },
 
 
     checkWin() {
@@ -297,20 +309,40 @@ const app = {
 //         }
 // 
 //     },
-	onScoreFBModal(num = 0) {
+	onScoreFBModal(num = 0, mult = 3) {
 		if (!this.scoreFBModalOpen) {
             $(".scoreFB-modal").removeClass('hidden'); // if not open, open it 
             this.scoreFBModalOpen = true;
             console.log("onScoreFBModal opening");
-        }
-        
-        else {
+        } else if (document.getElementById("FBtype").value == 'BED') {
+         	// $(".scoreFB-modal").addClass('hidden'); // close after confirming 
+//             this.scoreFBModalOpen = false;
+//             console.log("onScoreFBModal closing");
+            $(".modal-3B").removeClass('hidden'); // if not open, open it 
+            this.modalOpen3B = true;
+            console.log("3BBModal opening");
+            document.getElementById("FBtype").value = '';
+            document.getElementById("thrown-3B").value = num;
+            $("#3B-7").removeClass("closed");
+            $("#3B-8").removeClass("closed");
+            $("#3B-9").removeClass("closed");
+            if (num == '25') {
+            	$("#3B-7").addClass("closed");
+            	$("#3B-8").addClass("closed");
+            	$("#3B-9").addClass("closed");
+            }
+        } else {
             $(".scoreFB-modal").addClass('hidden'); // close after confirming 
             this.scoreFBModalOpen = false;
             console.log("onScoreFBModal closing");
+            $(".modal-3B").addClass('hidden'); // close after confirming 
+            this.modalOpen3B = false;
+            console.log("3BModal closing");
+            if (num == 0) num = document.getElementById("thrown-3B").value;
             thrown = document.getElementById("FBtype").value;
+            if (thrown == '') thrown = "BED";
             if (thrown == 'D') possiblePoints = num * 2;
-     		else possiblePoints = num * 3;
+     		else possiblePoints = num * mult;
      		console.log(possiblePoints);
      		for (let i = 0; i < this.numberOfPlayers; i++) { 
 				if (i === this.currentPlayer) {
@@ -355,13 +387,16 @@ const app = {
         console.log('undo')
         let pastTurns = [];
 
+		let lastDartValue = this.previousDartThrown[(this.previousDartThrown.length - 1)];
+
         this.throwsRemaining++;
         if(this.throwsRemaining > 3) {
             this.currentPlayer--; 
             if (this.currentPlayer < 0) {
                 this.currentPlayer = (this.numberOfPlayers - 1); // Once again, should have had an empty object to occupy player object at index 0 to avoid confusing logic.
             }
-            this.throwsRemaining = 1;
+            if (lastDartValue == "BED") this.throwsRemaining = 3; 
+            else this.throwsRemaining = 1;
         }
 
         $("#throws-left").text(this.throwsRemaining);
@@ -380,7 +415,7 @@ const app = {
       // need to keep track of previous dart value in array as well, slice it as well. 
       // for a miss, we'll avoid all of this
 
-      let lastDartValue = this.previousDartThrown[(this.previousDartThrown.length - 1)];
+      
       console.log(`last dart value is: ${lastDartValue}`)
       this.previousDartThrown.splice(-1, 1);
         console.log(this.previousDartThrown)
@@ -585,7 +620,7 @@ const app = {
   		
   		document.getElementById("3BED").addEventListener("click", function() {app.score(0,"BED");}, false);
   		
-  		document.getElementById("MISS").addEventListener("click", function() {app.onDartMiss();}, false);
+  		document.getElementById("ENTER").addEventListener("click", function() {app.onTurnEnd();}, false);
   		
   		document.getElementById("UNDO").addEventListener("click", function() {app.onUndoModal();}, false);
   		
@@ -616,6 +651,14 @@ const app = {
 		document.getElementById("FB2").addEventListener("click", function() {app.onScoreFBModal(2);}, false);
 		document.getElementById("FB1").addEventListener("click", function() {app.onScoreFBModal(1);}, false);
 		document.getElementById("FBB").addEventListener("click", function() {app.onScoreFBModal(25);}, false);
+		
+		document.getElementById("3B-9").addEventListener("click", function() {app.onScoreFBModal(0,9);}, false);
+		document.getElementById("3B-8").addEventListener("click", function() {app.onScoreFBModal(0,8);}, false);
+		document.getElementById("3B-7").addEventListener("click", function() {app.onScoreFBModal(0,7);}, false);
+		document.getElementById("3B-6").addEventListener("click", function() {app.onScoreFBModal(0,6);}, false);
+		document.getElementById("3B-5").addEventListener("click", function() {app.onScoreFBModal(0,5);}, false);
+		document.getElementById("3B-4").addEventListener("click", function() {app.onScoreFBModal(0,4);}, false);
+		document.getElementById("3B-3").addEventListener("click", function() {app.onScoreFBModal(0,3);}, false);
   	},
   
     init() {
