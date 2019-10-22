@@ -217,3 +217,9 @@ h2 {
   color: #3dfdfd;
   margin: 0;
 }
+
+.closed {
+  color: #d3d3d3;
+  text-decoration: line-through;
+  pointer-events: none;
+}

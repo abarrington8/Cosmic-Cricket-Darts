@@ -67,26 +67,24 @@ const app = {
  		points = 0;
  		possiblePoints = 0;
  		if (['T', 'D', 'BED'].indexOf(thrown) >= 0) {
- 			console.log("FB score hit");
+ 			console.log("FB hit");
  			if (this.players[this.currentPlayer][thrown] == 3) { //activate modal to ask what number what hit for points
-    			console.log("full board scoring");
-    			if (thrown == "T") {
-    				document.getElementById("FBtitle").innerHTML = "triple";
-    				document.getElementById("FBtype").value = "T";
-    			} else if (thrown == "D") {
-    				document.getElementById("FBtitle").innerHTML = "double";
-    				document.getElementById("FBtype").value = "D";
-    			} else if (thrown == "BED") {
-    				document.getElementById("FBtitle").innerHTML = "3 bed";
-    				document.getElementById("FBtype").value = "BED";
-    			}
-    			app.onScoreFBModal(thrown);
-    			return;
-    			// .then(success => {
-//     				if (thrown == 'D') possiblePoints = num * 3;
-//     				else possiblePoints = num * 2;
-//     				console.log(possiblePoints);
-    			//});
+    			console.log("FB hit potential score");
+    			if (this.players[Math.abs(this.currentPlayer - 1)][thrown] < 3) {
+					console.log("full board scoring");
+					if (thrown == "T") {
+						document.getElementById("FBtitle").innerHTML = "triple";
+						document.getElementById("FBtype").value = "T";
+					} else if (thrown == "D") {
+						document.getElementById("FBtitle").innerHTML = "double";
+						document.getElementById("FBtype").value = "D";
+					} else if (thrown == "BED") {
+						document.getElementById("FBtitle").innerHTML = "3 bed";
+						document.getElementById("FBtype").value = "BED";
+					}
+					app.onScoreFBModal(thrown);
+					return;
+				}
     		}
  		} else {
  			possiblePoints = Math.max(0,thrown * (mult - (3 - this.players[this.currentPlayer][thrown])));
@@ -101,6 +99,18 @@ const app = {
 		} 
         this.players[this.currentPlayer]['points'] += points;
         this.players[this.currentPlayer][thrown] = Math.min(3, mult + this.players[this.currentPlayer][thrown])
+        
+        if (this.players[this.currentPlayer][thrown] == 3 & this.players[Math.abs(this.currentPlayer - 1)][thrown] == 3) {
+			console.log("closure");
+			if (thrown == 'BED') $("#3BED").addClass("closed");
+			else if (thrown == 'T') $("#Trip").addClass("closed");
+			else if (thrown == 'D') $("#Doub").addClass("closed");
+			else if (thrown == 25) {
+				$("#singleB").addClass("closed");
+				$("#doubleB").addClass("closed");
+			}
+			else $('[id*=e' + thrown + ']').addClass("closed");
+		}
         
         $("#player-" + (this.currentPlayer + 1)).text(this.players[this.currentPlayer]['points']) // Update Score View 
         this.updateScoreView();
@@ -569,9 +579,9 @@ const app = {
   		document.getElementById("singleB").addEventListener("click", function() {app.score(25,"S");}, false);
   		document.getElementById("doubleB").addEventListener("click", function() {app.score(25,"D");}, false);
   		
-  		document.getElementById("T").addEventListener("click", function() {app.score(0,"T");}, false);
+  		document.getElementById("Trip").addEventListener("click", function() {app.score(0,"T");}, false);
   		
-  		document.getElementById("D").addEventListener("click", function() {app.score(0,"D");}, false);
+  		document.getElementById("Doub").addEventListener("click", function() {app.score(0,"D");}, false);
   		
   		document.getElementById("3BED").addEventListener("click", function() {app.score(0,"BED");}, false);
   		
